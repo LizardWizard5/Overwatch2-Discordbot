@@ -1,1 +1,1 @@
-<header class = title>Discord bot using Overwatch 2 api</header>
+<div class = title>Discord bot using Overwatch 2 api</div>
