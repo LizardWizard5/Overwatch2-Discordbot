@@ -5,10 +5,10 @@ req = requests.get("https://overfast-api.tekrop.fr/players/TheRuler420-1318/summ
 data = req.text
 platform = 'pc'
 jdata = json.loads(data)
-data = f"**Name: {jdata['username']}\nTitle: {jdata['title']}\n\
-         EndorsmentLVL: {jdata['endorsement']['level']}\n\
-            RANKED\n\
-            Tank:   {jdata['competitive'][platform]['tank']['tier']}\n\**"
-print(data)
+data = f"Name: {jdata['username']}\nTitle: {jdata['title']}\n\
+EndorsmentLVL: {jdata['endorsement']['level']}\n"
+roles = ['tank','support','damage']
+for role in roles:
+    data+=(f"{role}: {jdata['competitive'][platform][role]['division']} {jdata['competitive'][platform][role]['tier']}\n")
+print(f"**{data}**")
 
-#data = f"Name: {jdata['name']}\nRole: {jdata['role']}\nDescription: {jdata['description']}"
