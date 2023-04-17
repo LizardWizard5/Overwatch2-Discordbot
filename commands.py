@@ -43,5 +43,6 @@ def playerGrab(name,platform):#
             data+=(f"{role}: {jdata['competitive'][platform][role]['division']} {jdata['competitive'][platform][role]['tier']}\n")
     except:
         return "There was an error grabbing info, make sure you typed all the fields correctly and the profile is set to public"
+        raise
     return data
    

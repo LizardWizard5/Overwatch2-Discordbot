@@ -1,12 +1,12 @@
+import os
 import discord
 import commands
+from dotenv import load_dotenv
 
 bot = discord.Bot()
-#This is so I can push without worrying about removing my token because password is in my gitignore
-file = open('password', 'r')
-text = file.readline()
-TOKEN = text
-file.close()
+load_dotenv()
+TOKEN = os.getenv("TOKEN")
+
 
 @bot.event
 async def on_ready():
@@ -29,11 +29,10 @@ async def hero(ctx, name: discord.Option(str)):
   await ctx.respond(embed=embed)
 
 @bot.command(description="Returns player stats.")
-
 async def player(ctx, name:discord.Option(str),platform: discord.Option(str)):
-  '''
+  ''' These are not working
   :param name (str): Replace # with a - EX. TheRuler420-1318
-  :param platform: PC or CONSOLE
+  :param platform (str): PC or CONSOLE
   '''
   endUrl = f"players/{name}/summary"
   embed = discord.Embed(description=f"{commands.playerGrab(name,platform)}")
