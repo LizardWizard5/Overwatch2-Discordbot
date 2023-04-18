@@ -8,11 +8,10 @@ req = requests.get("https://overfast-api.tekrop.fr/players/TheRuler420-1318/summ
 data = req.text
 platform = 'pc'
 jdata = json.loads(data)
-data = f"Name: {jdata['username']}\nTitle: {jdata['title']}\n\
-EndorsmentLVL: {jdata['endorsement']['level']}\n"
+data = f"{jdata['username']}\n\n{jdata['title']}\n\nEndorsmentLVL: {jdata['endorsement']['level']}\n\n"
 roles = ['tank','support','damage']
 for role in roles:
-    data+=(f"{role}: {jdata['competitive'][platform][role]['division']} {jdata['competitive'][platform][role]['tier']}\n")
+    data+=(f"{role.upper()}:\n\n")
 print(f"**{data}**")
 
 print(jdata['avatar'])
@@ -20,14 +19,26 @@ print(jdata['avatar'])
 
 size = (800,800)#Size of image variable
 #img  = Image.new( mode = "RGB", size = size, color = (209, 123, 193) )#Creates image of size 500x500px and sets the background colour
-img = Image.open("resources\Overwatch 2 Screenshot 2023.04.17 - 01.22.00.16.png")
-img2 = Image.open(requests.get(jdata['avatar'], stream=True).raw)#Gets the image from api and stores to variable
-back_im = img.copy()#Copies img data to another variable
-back_im.paste(img2, (100, 50))#pastes the avatar image to image 1 copy
+bgImg = Image.open(requests.get(jdata['namecard'], stream=True).raw)
+avatar = Image.open(requests.get(jdata['avatar'], stream=True).raw)#Gets the image from api and stores to variable
+#avatarOutline = Image.new( mode = "RGB", size = size, color = (209, 123, 193) )
+#endorseLvl = Image.open(requests.get(jdata['endorsement']['frame'], stream=True).raw)
+
+roleImages=[]
+
+
+back_im = bgImg.copy()#Copies img data to another variable
+
+back_im.paste(avatar, (200, 50))#pastes the avatar image to image 1 copy
+yPos= 100
+for x in range(0, len(roles)):
+    back_im.paste(Image.open(requests.get(jdata['competitive'][platform][roles[x]]['rank_icon'], stream=True).raw).convert('RGBA').resize((50,50)), (200, yPos))
+    yPos +=100
+
 
 
 d1 = ImageDraw.Draw(back_im)#Sets up image for adding text
-font = ImageFont.truetype("arial.ttf", 40)#Sets text font
+font = ImageFont.truetype("Fonts\COOPERHEWITT-BOLD\CooperHewitt-Bold.otf", 28)#Sets text font
 #back_im.save('data/dst/rocket_pillow_paste_pos.jpg', quality=95)
-d1.text((65, 10), data, fill =(0, 0, 0),font=font)#Writes text
+d1.text((500, 10), data, fill =(244, 244, 244),font=font)#Writes text
 back_im.show()
