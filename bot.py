@@ -1,6 +1,8 @@
+from io import BytesIO
 import os
 import discord
 import commands
+from PIL import Image
 from dotenv import load_dotenv
 
 bot = discord.Bot()
@@ -34,13 +36,17 @@ async def player(ctx, name:discord.Option(str),platform: discord.Option(str)):
   :param name (str): Replace # with a - EX. TheRuler420-1318
   :param platform (str): PC or CONSOLE
   '''
+  """
   endUrl = f"players/{name}/summary"
   embed = discord.Embed(description=f"{commands.playerGrab(name,platform)}")
   embed.set_thumbnail(url=f"{commands.imageGrab(endUrl,'avatar')}")
-  await ctx.respond(embed=embed)
+  """
+
+  bites = commands.playerGrab(name,platform)#Had to look this up
+  bites.seek(0)
+  await ctx.respond("You're gonna have to click on the picture", file=discord.File(bites, filename="image.png"))
 
 @bot.command(description = "Returns whether or not the bot has connection to the API")
-
 async def ping(ctx):
   if(commands.checkConnection):
     response = "Connection found, everything should work."
