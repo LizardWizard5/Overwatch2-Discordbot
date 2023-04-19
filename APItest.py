@@ -31,24 +31,3 @@ def playerGrab(name,platform):#
 
 image = Image.open(playerGrab("TheRuler420-1318","pc"))#
 image.show()
-#bites = BytesIO()
-#image.save(bites, format="PNG")
-#bites.seek(0)
-#dfile = discord.File(bites, filename="image.png")
-"""
-#Player stuff
-def playerGrab(name,platform):#
-    req = requests.get(f"https://overfast-api.tekrop.fr/players/{name}/summary")
-    data = req.text
-    jdata = json.loads(data)
-    try:
-    #There actually has to be a faster method to do this but it's too late for my brain to process the research
-        data = f"Name: {jdata['username']}\nTitle: {jdata['title']}\nEndorsmentLVL: {jdata['endorsement']['level']}\n"
-        roles = ['tank','support','damage']
-        for role in roles:
-            data+=(f"{role}: {jdata['competitive'][platform][role]['division']} {jdata['competitive'][platform][role]['tier']}\n")
-    except:
-        return "There was an error grabbing info, make sure you typed all the fields correctly and the profile is set to public"
-        raise
-    return data
-"""
