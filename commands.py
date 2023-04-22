@@ -35,10 +35,14 @@ def imageGrab(endURL,command):
 
 #Player stuff
 def playerGrab(name,platform):#
-    #Kinda unoptimised, takes about a second or two
+
+    name = name.replace("#","-")
+    platform = platform.lower()
+    
     req = requests.get(f"https://overfast-api.tekrop.fr/players/{name}/summary")
     data = req.text
     jdata = json.loads(data)
+    
     data = f"{jdata['username']}\n\n{jdata['title']}\n\nEndorsmentLVL: {jdata['endorsement']['level']}\n\n"
     roles = ['tank','damage','support']
 
@@ -52,6 +56,7 @@ def playerGrab(name,platform):#
         roleImage=Image.open(requests.get(jdata['competitive'][platform][roles[x]]['rank_icon'], stream=True).raw).convert("RGBA").resize((40,45))
         alpha = roleImage.split()[-1]
         finalImage.paste(roleImage,(pos[x][0], pos[x][1]),mask=alpha)
+    
     finalText = ImageDraw.Draw(finalImage)#Sets up image for adding text
     font = ImageFont.truetype("Fonts\COOPERHEWITT-BOLD\CooperHewitt-Bold.otf", 29)#Sets text font
     pos = [[50, 175],[50, 225], [200, 175]]

@@ -1,8 +1,8 @@
 from io import BytesIO
 import os
 import discord
+from discord import option
 import commands
-from PIL import Image
 from dotenv import load_dotenv
 
 bot = discord.Bot()
@@ -16,9 +16,7 @@ async def on_ready():
 
 @bot.command(description = "Returns information about any given hero.")
 async def hero(ctx, name: discord.Option(str)):
-  '''
-  :param name: Hero name. some heroes have weird formatting like soldier76 -> soldier-76
-  '''
+
   if(commands.checkConnection):
     endUrl = f"heroes/{name}"
     info = f"{commands.heroData(name)}"
@@ -31,11 +29,9 @@ async def hero(ctx, name: discord.Option(str)):
   await ctx.respond(embed=embed)
 
 @bot.command(description="Returns player stats.")
-async def player(ctx, name:discord.Option(str),platform: discord.Option(str)):
-  ''' These are not working
-  :param name (str): Replace # with a - EX. TheRuler420-1318
-  :param platform (str): PC or CONSOLE
-  '''
+@option("name", description="Blizzard name and tag EX. TheRuler420#1318")
+@option("platform", choices=["pc","console"])
+async def player(ctx, name:str,platform:str):
   bites = commands.playerGrab(name,platform)#Had to look this up
   bites.seek(0)
   await ctx.respond("You're gonna have to click on the picture", file=discord.File(bites, filename="image.png"))
@@ -49,4 +45,3 @@ async def ping(ctx):
   await ctx.respond(f"```{response}```")
 
 bot.run(TOKEN) # run the bot with the token
-
