@@ -2,7 +2,7 @@ import requests
 import json
 
 
-name = "TheRuler420#1318"
+name = "TheRuler420-1318"
 platform = "PC"
 
 

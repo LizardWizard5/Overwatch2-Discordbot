@@ -1,0 +1,4 @@
+checkConnection
+heroData
+imageGrab
+playerGrab

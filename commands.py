@@ -17,6 +17,7 @@ def heroData(name):
     req = requests.get(f"https://overfast-api.tekrop.fr/heroes/{name.lower()}")
     data = req.text
     jdata = json.loads(data)
+    
     try:
         data = f"**Name: {jdata['name']}\nRole: {jdata['role']}\nLocation: {jdata['location']}\nDescription: {jdata['description']}**"
     except:
@@ -58,13 +59,16 @@ def playerGrab(name,platform):#
         finalImage.paste(roleImage,(pos[x][0], pos[x][1]),mask=alpha)
     
     finalText = ImageDraw.Draw(finalImage)#Sets up image for adding text
-    font = ImageFont.truetype("Fonts\COOPERHEWITT-BOLD\CooperHewitt-Bold.otf", 29)#Sets text font
+    font = ImageFont.truetype("Fonts/COOPERHEWITT-BOLD/CooperHewitt-Bold.otf", 29)#Sets text font. If you are using a linux system keep the slashes as they are but if you are running on windows, use backslash(\)
     pos = [[50, 175],[50, 225], [200, 175]]
     finalText.text((200, 20), data, fill =(244, 244, 244),font=font)#Writes text
 
     for x in range(0, len(roles)):
         finalText.text((pos[x][0], pos[x][1]), roles[x].upper()+":", fill =(244, 244, 244),font=font)#Writes text
     bites = BytesIO()#had to look this one up
+    
+    #maxsize = (1500, 512)
+    #finalImage.thumbnail(maxsize, Image.ANTIALIAS)
     finalImage.save(bites, format="PNG", box=None,reducing_gap=2)#
     return bites
    
