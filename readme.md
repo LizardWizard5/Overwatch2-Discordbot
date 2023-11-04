@@ -4,9 +4,14 @@
 
 ### I have not explored everything in this API but I am hoping to be able to pull character stats and player stats
 
-<picture>
-  <img alt="The discord bots profile picture" src="Replicating Roadhog.jpg">
-</picture>
+<figure>
+  <picture>
+    <img alt="The discord bots profile picture" src="Replicating Roadhog.jpg">
+  </picture>
+  <figcaption><a href="https://www.artstation.com/artwork/EL8V2v">Image by Dana Pull on Art Station </a></figcaption>
+</figure>
+
+
 
 <h1>TO-DO</h1>
 <li>Figure out a way to make the image output bigger for the player data command.</li>
