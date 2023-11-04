@@ -3,8 +3,11 @@ import json
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 import os
+import datetime
 
 def checkConnection():
+    dTime = datetime.datetime.now()
+    print("checkConnection ran at "+dTime.strftime("%m/%d/%Y, %H:%M:%S"))
     req = requests.get("https://overfast-api.tekrop.fr/heroes/")
     print(f"Status: {req.status_code}")
     if req.status_code == 200:
@@ -14,6 +17,8 @@ def checkConnection():
 
 #Hero stuff
 def heroData(name):
+    dTime = datetime.datetime.now()
+    print("heroData ran at "+dTime.strftime("%m/%d/%Y, %H:%M:%S"))
     req = requests.get(f"https://overfast-api.tekrop.fr/heroes/{name.lower()}")
     data = req.text
     jdata = json.loads(data)
@@ -36,7 +41,8 @@ def imageGrab(endURL,command):
 
 #Player stuff
 def playerGrab(name,platform):#
-
+    dTime = datetime.datetime.now()
+    print("playerGrab ran at "+dTime.strftime("%m/%d/%Y, %H:%M:%S"))
     name = name.replace("#","-")
     platform = platform.lower()
     
