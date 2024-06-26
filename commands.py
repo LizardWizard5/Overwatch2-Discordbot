@@ -4,6 +4,17 @@ from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 import os
 import datetime
+from dotenv import load_dotenv
+
+
+def heroList():
+    req = requests.get("https://overfast-api.tekrop.fr/heroes")
+    data = req.text
+    jdata = json.loads(data)
+    heroList = []
+    for x in jdata:
+        heroList.append(x['key'])
+    return heroList
 
 def checkConnection():
     dTime = datetime.datetime.now()
@@ -24,9 +35,9 @@ def heroData(name):
     jdata = json.loads(data)
     
     try:
-        data = f"**Name: {jdata['name']}\nRole: {jdata['role']}\nLocation: {jdata['location']}\nDescription: {jdata['description']}**"
+        data = [f"**Name: {jdata['name']}\nRole: {jdata['role']}\nLocation: {jdata['location']}\nDescription: {jdata['description']}**", f"{jdata['portrait']}"]  
     except:
-        return f"There was an error grabbing the hero **\"{name}\"**. Make sure you entered the name correctly"
+        return [f"There was an error grabbing the hero **\"{name}\"**. Make sure you entered the name correctly","https://github.com/LizardWizard5/Overwatch2-Discordbot/blob/master/ErrorPortrait.png?raw=true"]
     return data
 
 def imageGrab(endURL,command):
@@ -37,6 +48,7 @@ def imageGrab(endURL,command):
         data = f"{jdata[command]}"
     except:
         return 'https://github.com/LizardWizard5/Overwatch2-Discordbot/blob/master/ErrorPortrait.png?raw=true'
+
     return data
 
 #Player stuff
@@ -60,12 +72,17 @@ def playerGrab(name,platform):#
 
     pos = [[140,160],[200,210],[350,160]]
     for x in range(0, len(roles)):#Massive shoutout to WuTeEf on Realm of the Mad God! This would have taken me several hours to figure out.
-        roleImage=Image.open(requests.get(jdata['competitive'][platform][roles[x]]['rank_icon'], stream=True).raw).convert("RGBA").resize((40,45))
+        if(jdata['competitive']['pc'][roles[x]] == None):
+            imagePath = os.path.join("Resources","UnknownRank.png")
+            roleImage=Image.open(imagePath).convert("RGBA").resize((40,45))
+        else:
+            roleImage=Image.open(requests.get(jdata['competitive'][platform][roles[x]]['rank_icon'], stream=True).raw).convert("RGBA").resize((40,45))
         alpha = roleImage.split()[-1]
         finalImage.paste(roleImage,(pos[x][0], pos[x][1]),mask=alpha)
     
     finalText = ImageDraw.Draw(finalImage)#Sets up image for adding text
-    font = ImageFont.truetype("Fonts/COOPERHEWITT-BOLD/CooperHewitt-Bold.otf", 29)#Sets text font. If you are using a linux system keep the slashes as they are but if you are running on windows, use backslash(\)
+    fontPath = os.path.join("Fonts","COOPERHEWITT-BOLD","CooperHewitt-Bold.otf")#Sets up the font path regardless of OS
+    font = ImageFont.truetype(fontPath, 29)#Sets text font.
     pos = [[50, 175],[50, 225], [200, 175]]
     finalText.text((200, 20), data, fill =(244, 244, 244),font=font)#Writes text
 
@@ -78,3 +95,44 @@ def playerGrab(name,platform):#
     finalImage.save(bites, format="PNG", box=None,reducing_gap=2)#
     return bites
    
+def getShop():
+    load_dotenv()
+    url = os.getenv("shopURL")
+    req = requests.get(url)
+    data = req.text
+    jdata = json.loads(data)
+
+    currencyLocation = os.path.join("resources","OW2_VirtualCurrency.png")
+    currency = Image.open(currencyLocation).convert("RGBA")
+    currency = currency.resize((50,50))
+
+    alpha = currency.split()[-1]
+
+    images = []#Used to store image with the text we add using PIL
+    for item in jdata['mtxCollections'][0]['items']:
+        bgImg = Image.open(requests.get("https:"+item['image']['url'], stream=True).raw).convert("RGBA")#Gets the image from api and stores to variable
+        finalText = ImageDraw.Draw(bgImg)#Sets up image for adding text
+        
+
+        fontPath = os.path.join("Fonts","COOPERHEWITT-BOLD","CooperHewitt-Bold.otf")#Sets up the font path regardless of OS
+        font = ImageFont.truetype(fontPath, 50)
+        finalText.text((50, int(item['image']['height']) - 150), item['title'], fill =(244, 244, 244),font=font)
+        font = ImageFont.truetype(fontPath, 40)
+        finalText.text((50, int(item['image']['height']) -100), item['description'], fill =(244, 244, 244),font=font)
+        font = ImageFont.truetype(fontPath, 30)
+        if(item['price']['discountAmount'] == None):
+            finalText.text((110, int(item['image']['height']) - 50), item['price']['fullAmount'], fill =(244, 244, 244),font=font)
+        else:
+            finalText.text((110, int(item['image']['height']) - 50), item['price']['discountAmount'], fill =(244, 244, 244),font=font)
+
+        bgImg.paste(currency, (50, int (item['image']['height']) - 60),mask=alpha)
+
+        bites = BytesIO()
+        bgImg.save(bites, format="PNG")
+        bites.seek(0) 
+        images.append(bites)
+    return images
+
+
+
+
