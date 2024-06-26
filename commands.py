@@ -102,6 +102,9 @@ def getShop():
     data = req.text
     jdata = json.loads(data)
 
+    dTime = datetime.datetime.now()
+    print("getShop ran at "+dTime.strftime("%m/%d/%Y, %H:%M:%S"))
+
     currencyLocation = os.path.join("resources","OW2_VirtualCurrency.png")
     currency = Image.open(currencyLocation).convert("RGBA")
     currency = currency.resize((50,50))

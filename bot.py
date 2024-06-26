@@ -1,12 +1,24 @@
 from io import BytesIO
 import os
-import discord
 
-from dotenv import load_dotenv
-import commands
+
+
 import importlib
-import discord.ext
-from discord import app_commands
+try:
+  import discord
+  from dotenv import load_dotenv
+  import discord.ext
+  from discord import app_commands
+  import commands
+except:
+  response = input("You are missing some requirements. Would you like to download them? y(es)/n(o)")
+  while (response != "y" or response != "n"):
+    if(response == 'y'):
+      os.system("pip install -r requirements.txt")
+    else:
+      print("Ok but these are required for the bot to run")
+
+
 
 intents = discord.Intents.default()
 intents.message_content = True
