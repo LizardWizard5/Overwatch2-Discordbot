@@ -65,7 +65,7 @@ def playerGrab(name,platform):#
     fontPath = os.path.join("Fonts","COOPERHEWITT-BOLD","CooperHewitt-Bold.otf")#Sets up the font path regardless of OS
     font = ImageFont.truetype(fontPath, 29)#Sets text font.
 
-    if(jdata['error']):
+    if(data == '{"error":"Player not found"}'):
         return returnErrorImage("There was an error grabbing the player.\nMake sure you entered the name and platform correctly.")
     
     data = f"{jdata['username']}\n\n{jdata['title']}\n\nEndorsmentLVL: {jdata['endorsement']['level']}\n\n"
