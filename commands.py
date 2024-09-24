@@ -61,6 +61,12 @@ def playerGrab(name,platform):#
     req = requests.get(f"https://overfast-api.tekrop.fr/players/{name}/summary")
     data = req.text
     jdata = json.loads(data)
+
+    fontPath = os.path.join("Fonts","COOPERHEWITT-BOLD","CooperHewitt-Bold.otf")#Sets up the font path regardless of OS
+    font = ImageFont.truetype(fontPath, 29)#Sets text font.
+
+    if(jdata['error']):
+        return returnErrorImage("There was an error grabbing the player.\nMake sure you entered the name and platform correctly.")
     
     data = f"{jdata['username']}\n\n{jdata['title']}\n\nEndorsmentLVL: {jdata['endorsement']['level']}\n\n"
     roles = ['tank','damage','support']
@@ -81,8 +87,7 @@ def playerGrab(name,platform):#
         finalImage.paste(roleImage,(pos[x][0], pos[x][1]),mask=alpha)
     
     finalText = ImageDraw.Draw(finalImage)#Sets up image for adding text
-    fontPath = os.path.join("Fonts","COOPERHEWITT-BOLD","CooperHewitt-Bold.otf")#Sets up the font path regardless of OS
-    font = ImageFont.truetype(fontPath, 29)#Sets text font.
+    
     pos = [[50, 175],[50, 225], [200, 175]]
     finalText.text((200, 20), data, fill =(244, 244, 244),font=font)#Writes text
 
@@ -94,8 +99,23 @@ def playerGrab(name,platform):#
     #finalImage.thumbnail(maxsize, Image.ANTIALIAS)
     finalImage.save(bites, format="PNG", box=None,reducing_gap=2)#
     return bites
+
+def returnErrorImage(message):
+    fontPath = os.path.join("Fonts","COOPERHEWITT-BOLD","CooperHewitt-Bold.otf")#Sets up the font path regardless of OS
+    font = ImageFont.truetype(fontPath, 29)#Sets text font.
+    errorImg = Image.open("ErrorPortrait.png")
+    errorText = ImageDraw.Draw(errorImg)
+    #Align text to center
+
+
+    errorText.text((20, 20), "ERROR", fill =(255, 0, 0),font=font)
+    errorText.text((20, errorImg.height-100), message, fill =(255, 0, 0),font=font)
+    bites = BytesIO()
+    errorImg.save(bites, format="PNG")
+    return bites
    
 def getShop():
+
     load_dotenv()
     url = os.getenv("shopURL")
     req = requests.get(url)
