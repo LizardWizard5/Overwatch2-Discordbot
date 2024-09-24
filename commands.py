@@ -108,27 +108,39 @@ def getShop():
     currencyLocation = os.path.join("resources","OW2_VirtualCurrency.png")
     currency = Image.open(currencyLocation).convert("RGBA")
     currency = currency.resize((50,50))
+    gradientFade = Image.open(os.path.join("resources","GradientFade.png"))#.convert("RGBA")
 
     alpha = currency.split()[-1]
 
     images = []#Used to store image with the text we add using PIL
     for item in jdata['mtxCollections'][0]['items']:
         bgImg = Image.open(requests.get("https:"+item['image']['url'], stream=True).raw).convert("RGBA")#Gets the image from api and stores to variable
+         # Resize gradientFade to match the width of bgImg
+        gradientFade = gradientFade.resize((bgImg.width, 200))
+        
+        # Create a new image to composite the gradient on
+        gradientLayer = Image.new("RGBA", bgImg.size)
+        gradientLayer.paste(gradientFade, (0, int(bgImg.height) - 235), mask=gradientFade.split()[-1])
+
+        # Composite the gradient on top of the background image
+        bgImg = Image.alpha_composite(bgImg, gradientLayer)
+        
         finalText = ImageDraw.Draw(bgImg)#Sets up image for adding text
         
-
+       
+        
         fontPath = os.path.join("Fonts","COOPERHEWITT-BOLD","CooperHewitt-Bold.otf")#Sets up the font path regardless of OS
         font = ImageFont.truetype(fontPath, 50)
-        finalText.text((50, int(item['image']['height']) - 150), item['title'], fill =(244, 244, 244),font=font)
+        finalText.text((50, int(item['image']['height']) - 210), item['title'], fill =(244, 244, 244),font=font)
         font = ImageFont.truetype(fontPath, 40)
-        finalText.text((50, int(item['image']['height']) -100), item['description'], fill =(244, 244, 244),font=font)
+        finalText.text((50, int(item['image']['height']) -150), item['description'], fill =(244, 244, 244),font=font)
         font = ImageFont.truetype(fontPath, 30)
         if(item['price']['discountAmount'] == None):
-            finalText.text((110, int(item['image']['height']) - 50), item['price']['fullAmount'], fill =(244, 244, 244),font=font)
+            finalText.text((110, int(item['image']['height']) - 100), item['price']['fullAmount'], fill =(244, 244, 244),font=font)
         else:
-            finalText.text((110, int(item['image']['height']) - 50), item['price']['discountAmount'], fill =(244, 244, 244),font=font)
-
-        bgImg.paste(currency, (50, int (item['image']['height']) - 60),mask=alpha)
+            finalText.text((110, int(item['image']['height']) - 100), item['price']['discountAmount'], fill =(244, 244, 244),font=font)
+        
+        bgImg.paste(currency, (50, int (item['image']['height']) - 110),mask=alpha)
 
         bites = BytesIO()
         bgImg.save(bites, format="PNG")
