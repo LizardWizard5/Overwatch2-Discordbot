@@ -16,3 +16,6 @@
 <li>Figure out a way to make the image output bigger for the player data command.</li>
 <li>Make images for the other commands</li>
 <li>Add shop tracking using web-scraping (API does not have the shop)</li>
+
+<h1>Known issues</h1>
+<li>Bot seems to die after being on for a while</li>
